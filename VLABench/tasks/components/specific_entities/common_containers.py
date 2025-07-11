@@ -190,7 +190,8 @@ class BoxFlatContainer(FlatContainer):
                  **kwargs):
         self.size = size
         if rgba is None:
-            rgba = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), random.uniform(0.4, 1)]
+            rgba=[1,1,0,0.7]
+            #rgba = [random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), random.uniform(0.4, 1)]
         self.rgba = rgba
         super().__init__(**kwargs)
     

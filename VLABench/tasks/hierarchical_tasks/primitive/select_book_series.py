@@ -6,17 +6,16 @@ from VLABench.tasks.config_manager import BenchTaskConfigManager
 from VLABench.utils.register import register
 from VLABench.utils.utils import flatten_list
 
-BOOK_TYPE = ["biographies", "fiction", "biotechnology", "physics", "law", "computer_science", 
-"history"]
+BOOK_TYPE = ["biographies"]
 
 @register.add_config_manager("select_book")
 class SelectBookConfigManager(BenchTaskConfigManager):
     def __init__(self, 
                  task_name,
-                 num_objects=[3, 4],
+                 num_objects=[3],
                  **kwargs):
         """select the book with specific name"""
-        super().__init__(task_name, num_objects, **kwargs)
+        super().__init__(task_name, 3, **kwargs)
     
     def load_init_containers(self, init_container):
         if init_container is not None:
@@ -62,7 +61,7 @@ class SelectSpecificTypeBookConfigManager(SelectBookConfigManager):
             if target_entity in similar_seen_obj or target_entity in similar_unseen_obj:
                 continue
             other_objects.append(similar_seen_obj+similar_unseen_obj)
-        other_type_id = random.sample(range(len((other_objects))), self.num_object-1)
+        other_type_id = []
         for id in other_type_id:
             subentities.append(random.choice(other_objects[id]))
         random.shuffle(subentities)

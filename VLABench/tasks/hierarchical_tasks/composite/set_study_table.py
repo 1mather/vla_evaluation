@@ -10,10 +10,10 @@ from VLABench.utils.utils import euler_to_quaternion
 class SelectBookConfigManager(SelectSpecificTypeBookConfigManager):
     def __init__(self, 
                  task_name,
-                 num_objects=[3, 4],
+                 num_objects=[3],
                  **kwargs):
         """select the book with specific name"""
-        super().__init__(task_name, num_objects, **kwargs)
+        super().__init__(task_name, 3, **kwargs)
         
     def load_objects(self, target_entity):
         super().load_objects(target_entity)

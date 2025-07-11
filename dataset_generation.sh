@@ -1,13 +1,12 @@
-N_SAMPLE=10
+N_SAMPLE=200
 OFFSET=0
  
-task_names=("select_toy" "select_fruit" ) # add more task here
-save_dir="/Your/path/to/trajectory/dataset"
+task_names=("set_study_table" ) # add more task here
+save_dir="/mnt/data/310_jiarui/datafactory"
 
 for task_name in "${task_names[@]}"; do # add more process here
     commands=(
         "python scripts/trajectory_generation.py --task-name $task_name --n-sample $N_SAMPLE --start-id $((0 * N_SAMPLE + OFFSET)) --save-dir $save_dir"
-        "python scripts/trajectory_generation.py --task-name $task_name --n-sample $N_SAMPLE --start-id $((1 * N_SAMPLE + OFFSET)) --save-dir $save_dir"
     )
 
     echo "Running tasks for: $task_name"

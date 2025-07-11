@@ -33,26 +33,47 @@ def create_lerobot_dataset_from_hdf5(args):
         robot_type="franka",
         fps=10,
         features={
-            "image":{
+            "observation.image_0":{
                 "dtype": "image",
                 "shape": (480, 480, 3),
                 "names": ["height", "width", "channels"]
             },
-            "wrist_image":{
+            "observation.image_1":{
                 "dtype": "image",
                 "shape": (480, 480, 3),
                 "names": ["height", "width", "channels"]
             },
-            "state":{
+            "observation.image_2":{
+                "dtype": "image",
+                "shape": (480, 480, 3),
+                "names": ["height", "width", "channels"]
+            },
+            "observation.image_3":{
+                "dtype": "image",
+                "shape": (480, 480, 3),
+                "names": ["height", "width", "channels"]
+            },
+            "observation.image_4":{
+                "dtype": "image",
+                "shape": (480, 480, 3),
+                "names": ["height", "width", "channels"]
+            },
+            "observation.image_wrist":{
+                "dtype": "image",
+                "shape": (480, 480, 3),
+                "names": ["height", "width", "channels"]
+            },
+            "observation.state":{
                 "dtype": "float",
                 "shape": (7,),
                 "names": ["state"]
             },
-            "actions":{
+            "action":{
                 "dtype": "float",
                 "shape": (7,),
                 "names": ["actions"]
             },
+
         },
         image_writer_processes=5,
         image_writer_threads=10
@@ -87,10 +108,14 @@ def create_lerobot_dataset_from_hdf5(args):
                         action = np.concatenate([action[:6], np.array([0])])
                     dataset.add_frame(
                         {
-                            "image": images[i][2], # front camera
-                            "wrist_image": images[i][3], # wrist camera
-                            "state": ee_state[i],
-                            "actions": action
+                                "observation.image_0": images[i][2], #left low
+                                "observation.image_1": images[i][3], #left high
+                                "observation.image_2": images[i][0], #right low
+                                "observation.image_3": images[i][1], #right high
+                                "observation.image_4": images[i][4], #front
+                                "observation.image_wrist": images[i][5], #wrist 
+                                "observation.state": ee_state[i],
+                                "action": action,
                         }
                     )
                 dataset.save_episode(task=np.array(f["data"][timestamp]["instruction"])[0].decode("utf-8"))

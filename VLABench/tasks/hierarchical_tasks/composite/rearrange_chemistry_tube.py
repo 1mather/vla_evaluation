@@ -11,17 +11,17 @@ from VLABench.utils.skill_lib import SkillLib
 class RearrangeTubeConfigManager(BenchTaskConfigManager):
     def __init__(self,
                  task_name,
-                 num_objects=[2, 3],
+                 num_objects=[2],
                  **kwargs
                  ):
         super().__init__(task_name, num_objects, **kwargs)
         
     def get_task_config(self, target_container, init_container, **kwargs):
         self.target_entity, self.target_container, self.init_container = None, None, None
-        objects = random.sample(self.seen_object + self.unseen_object, self.num_object)
+        objects = [self.seen_object[0],self.seen_object[3]]
         target_entities = []
         for similar_objects in objects:
-            target_entities.append(random.choice(similar_objects))
+            target_entities.append(similar_objects[0])
         self.load_containers(target_container, target_entities)
         self.load_init_containers(init_container, target_entities)
         self.get_instruction()
@@ -37,7 +37,7 @@ class RearrangeTubeConfigManager(BenchTaskConfigManager):
         self.config["task"]["components"][-1]["subentities"] = []
         self.config["task"]["components"][-1]["randomness"] = None
         container_pos = self.config["task"]["components"][-1]["position"]
-        targer_rol_poses = random.sample(relative_col_pos, self.num_object)
+        targer_rol_poses = [relative_col_pos[0],relative_col_pos[1]]
         target_nametag_poses = [[pos, random.choice(relative_row_pos)-0.05, 0.1] for pos in targer_rol_poses]
         self.target_tube_position = dict()
         for entity, pos in zip(entities, target_nametag_poses):            
@@ -60,8 +60,8 @@ class RearrangeTubeConfigManager(BenchTaskConfigManager):
                                                              ]
         self.config["task"]["components"][-1]["subentities"] = []
         self.config["task"]["components"][-1]["randomness"] = None
-        targer_rol_poses = random.sample(relative_col_pos, self.num_object)
-        target_solution_poses = [[pos, random.choice(relative_row_pos), 0] for pos in targer_rol_poses]
+        targer_rol_poses = [relative_col_pos[3],relative_col_pos[1]]
+        target_solution_poses = [[pos, relative_row_pos[1], 0] for pos in targer_rol_poses]
         for entity, pos in zip(entities, target_solution_poses):            
             tube_config = dict(
                 name=entity,

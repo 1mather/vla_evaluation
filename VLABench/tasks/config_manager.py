@@ -6,11 +6,14 @@ from VLABench.configs import name2config
 from VLABench.configs.constant import name2class_xml
 from VLABench.utils.utils import flatten_list, grid_sample, find_key_by_value
 
+# DEFAULT_RABDOMNESS = dict(
+#     pos=[0.02, 0.02, 0],
+#     quat=[0, 0, 0.05],
+# )
 DEFAULT_RABDOMNESS = dict(
-    pos=[0.02, 0.02, 0],
-    quat=[0, 0, 0.05],
+    pos=[0, 0, 0],
+    quat=[0, 0, 0],
 )
-
 class BenchTaskConfigManager():
     """
     Config manager class for task configuration load and management.
@@ -99,9 +102,11 @@ class BenchTaskConfigManager():
     
     def get_entity_config(self, target_entity:str, position=[0,0,0.8], orientation=[0, 0, 0], randomness=DEFAULT_RABDOMNESS, **kwargs):
         name = kwargs.get("specific_name", f"{target_entity}")
+        
         xml_path = name2class_xml[target_entity][-1]
         if isinstance(xml_path, list):
-            xml_path = random.choice(xml_path)
+            #xml_path = random.choice(xml_path)
+            xml_path=xml_path[-1]
         entity_config = dict(
             name=name,
             xml_path=xml_path,
@@ -205,9 +210,12 @@ class ClusterConfigManager(BenchTaskConfigManager):
     def load_containers(self, target_container):
         assert isinstance(target_container, list), "containers should be more than 2 in clustering tasks"
         for i, container in enumerate(target_container):
+            # container_config = self.get_entity_config(container, 
+            #                                           position=[(i-0.5)*0.6, random.uniform(-0.1, 0.1), 0.8], 
+            #                                           specific_name=f"{container}_{i}")
             container_config = self.get_entity_config(container, 
-                                                      position=[(i-0.5)*0.6, random.uniform(-0.1, 0.1), 0.8], 
-                                                      specific_name=f"{container}_{i}")
+                                            position=[(i-0.5)*0.6, 0, 0.8], 
+                                            specific_name=f"{container}_{i}")
             self.config["task"]["components"].append(container_config)
     
     def load_objects(self, target_entity, **kwargs):
