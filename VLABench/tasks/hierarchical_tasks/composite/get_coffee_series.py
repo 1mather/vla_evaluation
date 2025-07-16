@@ -31,8 +31,8 @@ class GetCoffeeConfigManager(BenchTaskConfigManager):
     def load_objects(self, target_entity, *kwargs):
         super().load_objects(target_entity, *kwargs)
         self.config["task"]["components"][-1]["randomness"] = None
-        self.config["task"]["components"][-1]["position"] = [random.uniform(0.2, 0.3),
-                                                             random.uniform(0, 0.1),
+        self.config["task"]["components"][-1]["position"] = [0.25,
+                                                             0.05,
                                                              0.85]
         # self.config["task"]["components"][-1]["position"] = [0.25,
         #                                                     0.1,

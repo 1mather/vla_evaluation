@@ -35,6 +35,7 @@ tasks=[
     "insert_flower_difficult",
     "select_chemistry_tube_difficult",
 
+    "get_coffee"
     #position ood for camera
     "select_fruit_ood_camera",
 
@@ -54,6 +55,7 @@ def main(args):
     os.environ["MUJOCO_GL"] = "egl"
     evaluator = Evaluator(
         tasks=demo_tasks,
+        episode_config="/mnt/data/310_jiarui/datafactory/VLABench/VLABench/configs/task_config.json",
         n_episodes=args.n_episodes,    
         max_substeps=args.max_substeps,   
         save_dir=save_dir,
@@ -75,4 +77,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args)
 
-# python evaluation.py --task set_study_table --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/VLABench/logs/set_table
+# python evaluation.py --task set_study_table --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/datafactory/VLABench/logs/set_table
+# python evaluation.py --task get_coffee --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/datafactory/VLABench/logs/get_coffee

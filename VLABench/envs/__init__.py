@@ -10,6 +10,7 @@ with open(os.path.join(os.getenv("VLABENCH_ROOT"), "configs/robot_config.json"),
     ROBOT_CONFIG= json.load(f)
 
 with open(os.path.join(os.getenv("VLABENCH_ROOT"), "configs/task_config.json"), "r") as f:
+
     TASK_CONFIG = json.load(f)
 
 def load_env(task, 

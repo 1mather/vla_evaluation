@@ -57,6 +57,7 @@ tasktoconfig={
 
     "select_fruit_ood_camera":"configs/task_related/task_specific_config/select_apple_ood_camera/task_config_1_pos_200.json",
 
+    "get_coffee_simple":""
 }
 def quat2euler(quat, is_degree=False):
     r = R.from_quat([quat[1], quat[2], quat[3], quat[0]])
@@ -92,7 +93,7 @@ class Evaluator:
         else:self.episode_config = episode_config
         if self.episode_config is None:
             print("Load the task episodes by task, instead of episodes")
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             episode_path=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),tasktoconfig.get(tasks[0]))
             with open(episode_path, "r") as f:
                 self.episode_config = json.load(f)
@@ -166,7 +167,7 @@ class Evaluator:
                 json.dump(instruction, f)
         return metrics
         
-    def evaluate_single_episode(self, agent, task_name, episode_id, episode_config, seed=42, max_episode_length=250, **kwargs):
+    def evaluate_single_episode(self, agent, task_name, episode_id, episode_config, seed=42, max_episode_length=600, **kwargs):
         """
         If episode_config is given, the task and scene will load deterministically.
         params:
@@ -238,6 +239,8 @@ class Evaluator:
                     observation_images_tosend = {}
                     for img in self.observation_images:
                         observation_images_tosend[img] = observation["rgb"][OBSERVATION[img]]
+                    #observation_images_tosend["observation.state"]=ee_state
+                    
                     try:
                         pos, euler, gripper_state, view_index = send_test_request(observation_images_tosend,ee_state,is_reset=False)
                         distance_to_current=np.linalg.norm(pos-ee_pos)
@@ -247,13 +250,14 @@ class Evaluator:
                         # if distance_to_current>0.2:
                         #     continue
                     except Exception as e:
+                        print(e)
                         continue
                 else:
                     pos, euler, gripper_state, view_index = agent.predict(observation, **kwargs)
                 quat = euler_to_quaternion(*euler)
                 #quat=euler_to_quaternion(np.pi,0,-0.5*np.pi)
                 action = env.robot.get_qpos_from_ee_pos(physics=env.physics, pos=pos, quat=quat)[:7]#delta关节角度
-                action = np.concatenate([action, gripper_state])
+                action = np.concatenate([action[1], gripper_state])
             elif agent.control_mode == "joint":
                 qpos, gripper_state = agent.predict(observation, **kwargs)
                 action = np.concatenate([qpos, gripper_state])
@@ -281,7 +285,7 @@ class Evaluator:
         info["success"] = success
         info["consumed_step"] = i
         #info["intention_score"] = env.get_intention_score()
-        info["progress_score"] = env.get_task_progress()
+        #info["progress_score"] = env.get_task_progress()
         
         env.close()
         if self.save_dir is not None and self.visulization:
@@ -315,7 +319,8 @@ class Evaluator:
                 #avg_progress_score = np.mean(progress_score)
                 metric["progress_score"] = progress_score
             else:
-                raise NotImplementedError(f"Metric {key} is not implemented")
+                #raise NotImplementedError(f"Metric {key} is not implemented")
+                continue
         return metric
     
     def save_video(self, frames, save_dir):

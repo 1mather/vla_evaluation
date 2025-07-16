@@ -67,7 +67,7 @@ class SelectSpecificTypeBookConfigManager(SelectBookConfigManager):
         random.shuffle(subentities)
         for i, subentity in enumerate(subentities):
             subentity_config = self.get_entity_config(subentity.lower(),
-                                                      position=[(i-1.5)*np.random.uniform(0.1, 0.2), 0, 0.46],
+                                                      position=[(i-1.5)*0.1, 0, 0.46],
                                                       orientation=[np.pi, 0, np.pi/2])
             self.config["task"]["components"][-1]["subentities"].append(subentity_config)
     

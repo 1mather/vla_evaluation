@@ -1,8 +1,8 @@
 N_SAMPLE=200
 OFFSET=0
  
-task_names=("set_study_table" ) # add more task here
-save_dir="/mnt/data/310_jiarui/datafactory"
+task_names=("set_study_table") # add more task here
+save_dir="/mnt/data/310_jiarui/datafactory/fix"
 
 for task_name in "${task_names[@]}"; do # add more process here
     commands=(

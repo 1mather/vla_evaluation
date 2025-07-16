@@ -20,14 +20,14 @@ class SelectBookConfigManager(SelectSpecificTypeBookConfigManager):
         init_container_config = self.config["task"]["components"][-1]
         for i, subentity_config in enumerate(init_container_config["subentities"]):
             subentity_config["position"][1] -= 0.1
-        laptop_config = self.get_entity_config("laptop", position=[random.uniform(-0.2, -0.1), random.uniform(-0.1, 0.0), 0.8])
+        laptop_config = self.get_entity_config("laptop", position=[-0.15, 0, 0.8])
         self.config["task"]["components"].append(laptop_config) 
     
     def load_init_containers(self, init_container):
         if init_container is not None:
             self.config["task"]["components"].append(self.get_entity_config(init_container, 
-                                                                            position=[random.uniform(-0.1, 0.1), 
-                                                                                      random.uniform(0.35, 0.4), 0.8]))
+                                                                            position=[0, 
+                                                                                    0.4, 0.8]))
     
     def get_instruction(self, target_entity, **kwargs):
         instruction = [f"Today I want to review the content about ... Please help me to manage the study table before I come."]
