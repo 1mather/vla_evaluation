@@ -14,7 +14,7 @@ from VLABench.utils.utils import euler_to_quaternion
 class TexasHoldemConfigManager(BenchTaskConfigManager):
     def __init__(self, 
                  task_name,
-                 num_objects=7,
+                 num_objects=3,   #jayden  mao
                  **kwargs):
         super().__init__(task_name, num_objects, **kwargs)
     
@@ -29,12 +29,16 @@ class TexasHoldemConfigManager(BenchTaskConfigManager):
     def load_containers(self, target_container):
         container_config = self.get_entity_config(target_container, 
                                                   position=[random.uniform(-0.2, 0.2), random.uniform(0.3, 0.35), 0.8],
+                                                #   position=[random.uniform(0, 0.1), random.uniform(0.3, 0.35), 0.8],
                                                   specific_name="target_container")
         self.config["task"]["components"].append(container_config)
     
     def load_objects(self, target_entity):
-        # card holder& poker init
-        pokers = random.sample(CARDS, k=self.num_object)
+        # card holder& poker init    随机抽取 num_object 张牌
+        # pokers = random.sample(CARDS, k=self.num_object)
+
+        # jayden mao
+        pokers = CARDS[0:self.num_object]
         
         for i in range(self.num_object):
             position = [(i-2)*0.1+random.uniform(0, 0.05), random.uniform(-0.05, 0.05), 0.8] if i < 5 else [(i-5.5)*0.1+random.uniform(-0.03, 0.03), random.uniform(-0.25, -0.15), 0.8]
@@ -47,7 +51,17 @@ class TexasHoldemConfigManager(BenchTaskConfigManager):
             card_holder_config["subentities"] = []
             value, suite = pokers[i][0], pokers[i][1]
 
+            #  x < 0 是左边，x > 0 是右边 
+            # yuan
             name = f"{value}_{suite}" if suite == "joker" else f"{value}_of_{suite}"
+
+            # jayden 
+            # name = [f"{value}_{suite}" if suite == "joker" else f"{value}_of_{suite}", position]
+            print("position:", position)
+            x = position[0]       
+            name = f"{value}_{suite}_{x}" if suite == "joker" else f"{value}_of_{suite}_{x}"
+            print(name)
+            # input("********")  
 
             poker_config = dict(
                 name=name,
@@ -66,7 +80,10 @@ class TexasHoldemConfigManager(BenchTaskConfigManager):
         pass  
     
     def get_instruction(self, **kwargs):
-        instruction = ["We're playing Texas hodl'em game! What's your largest cards? Show me on the placemat" ]
+        # instruction = ["We're playing Texas hodl'em game! What's your largest cards? Show me on the placemat" ]
+        instruction = ["We're playing Texas hodl'em game! Pick up the leftmost card on the placemat." ]
+        # instruction = ["We're playing Texas hodl'em game! Take the middle card from the placemat." ]
+        # instruction = ["We're playing Texas hodl'em game! Grab the rightmost card in front of you." ]
         self.config["task"]["instructions"] = instruction
         
 @register.add_config_manager("texas_holdem_explore")
@@ -108,14 +125,54 @@ class PokerPlayTask(CompositeTask):
     
     def init_conditions(self):
         self._target_entities = dict()
-        rank, target_cards = get_largest_combination([(poker.name.split('_')[0], poker.name.split('_')[2]) for poker in self.pokers])
-        self.max_cardtype = list(RANKING.keys())[-rank]
-        assert len(target_cards) > 0
-        for target_card in target_cards:
-            target_name = "{}_of_{}".format(VALUES[target_card[0] - 2], target_card[1])
-            target_entity = self.entities[target_name]
-            self._target_entities[target_name] = target_entity
+
+        # test  jayden mao
+        # print("poker name:::")
+        # for poker in self.pokers:
+        #     print(poker.name)
+
+        # print("target:::")
+
+        # old
+        # rank, target_cards = get_largest_combination([(poker.name.split('_')[0], poker.name.split('_')[2]) for poker in self.pokers])
+        # self.max_cardtype = list(RANKING.keys())[-rank]
+        # assert len(target_cards) > 0
+        # for target_card in target_cards:
+        #     target_name = "{}_of_{}".format(VALUES[target_card[0] - 2], target_card[1])
+        #     print(target_name)
+        #     target_entity = self.entities[target_name]
+        #     self._target_entities[target_name] = target_entity
+
+
+
+        # jayden mao
+        # 新逻辑：选最左/中/右作为目标
+
+        #  x < 0 是左边，x > 0 是右边
+        # name = f"{value}_{suite}_{x}" if suite == "joker" else f"{value}_of_{suite}_{x}"
+        x_list = [(i, float(poker.name.split('_')[3])) for i, poker in enumerate(self.pokers)]         
+        print(x_list)
+        idx = -1
+        idx_x = 100;
+        for tmp in x_list:
+            if tmp[1] < idx_x:
+                idx_x = tmp[1]
+                idx = tmp[0]
+        print(idx, idx_x)
+        target_name = self.pokers[idx].name
+        target_entity = self.entities[target_name]
+        self._target_entities[target_name] = target_entity
+        print(target_name)
+        # input("********")  
+
+
         entities=list(self._target_entities.values())
+        # test  jayden mao
+        # print("target:::")
+        # for poker in entities:
+        #     print(poker)
+        # input("**********************")
+
         if None in entities:
             entities.remove(None)
         on_condition = ContainCondition(entities=entities, 
