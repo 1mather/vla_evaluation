@@ -40,6 +40,8 @@ tasks=[
     "select_fruit_ood_camera",
 
     "set_study_table",
+
+    "texas_holdem",
 ]
 
 
@@ -79,3 +81,4 @@ if __name__ == "__main__":
 
 # python evaluation.py --task set_study_table --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/datafactory/VLABench/logs/set_table
 # python evaluation.py --task get_coffee --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/datafactory/VLABench/logs/get_coffee
+# python evaluation.py --task texas_holdem --n_episodes 50 --max_substeps 10 --save_dir /mnt/data/310_jiarui/datafactory/VLABench/logs/texas
