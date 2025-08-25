@@ -1,3 +1,4 @@
+      
 import random
 import numpy as np
 from VLABench.utils.register import register
